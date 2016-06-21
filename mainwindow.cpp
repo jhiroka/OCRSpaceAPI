@@ -127,9 +127,7 @@ void MainWindow::chooseFile()
  *        on your computer
  */
 void MainWindow::saveToFile() {
-    //saveLocation = QFileDialog::getExistingDirectory(this,tr("Save As"),"C:/",QFileDialog::ShowDirsOnly|QFileDialog::DontResolveSymlinks);//open a dialog
     QString saveAsName = QFileDialog::getSaveFileName(this, tr("Save As"), QDir::homePath(), tr("PlainText file (*.txt)"));
-    //QString saveAsName = QFileDialog::getSaveFileName(this, tr("Save As"), QDir::homePath(), tr("Text file (*.txt);;PDF file (*.pdf);;MS-Word file(*.doc)"));
     if(!saveAsName.isNull()) {
         QFile outputFile(saveAsName);
         outputFile.open(QFile::WriteOnly);
