@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->setupUi(this);
     this->setWindowTitle("OCR Space API");
-    this->setBaseSize(900,500);
+    this->setBaseSize(900, 500);
 
     //create all layouts
     QVBoxLayout* vlayout1 = new QVBoxLayout;
@@ -47,6 +47,20 @@ MainWindow::MainWindow(QWidget *parent) :
     exportToFile->setFixedWidth(100);
     exportToFile->setToolTip("Save the results to a text file");
 
+    QLabel* apiLabel = new QLabel;
+    apiLabel->setText("Enter API key");
+
+    QLabel* apiInfo = new QLabel;
+    apiInfo->setText("Get it: https://ocr.space/ocrapi");
+
+    apiKeyEdit = new QLineEdit;
+
+    QPushButton* apiKeySubmit = new QPushButton("Submit");
+    apiKeySubmit->setFixedWidth(100);
+    apiKeySubmit->setToolTip("Submit the API key");
+    
+
+
     //scroll area stuff
     textScrollArea = new QScrollArea;
     imageScrollArea = new QScrollArea;
@@ -76,11 +90,17 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(languageChoices,SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(onItemClicked(QListWidgetItem*)));
     QObject::connect(performOCR,SIGNAL(clicked()),this,SLOT(recognize()));
     QObject::connect(exportToFile,SIGNAL(clicked()),this,SLOT(saveToFile()));
+    QObject::connect(apiKeySubmit, SIGNAL(clicked()), this, SLOT(getApiKey()));
+
 
     //add everything to layouts
     vlayout1->addWidget(openFileButton);
     vlayout2->addWidget(chooseLang);
     vlayout2->addWidget(languageChoices);
+    vlayout2->addWidget(apiLabel);
+    vlayout2->addWidget(apiInfo);
+    vlayout2->addWidget(apiKeyEdit);
+    vlayout2->addWidget(apiKeySubmit);
     vlayout2->addWidget(performOCR);
     hlayout2->addWidget(imageScrollArea);
     hlayout2->addLayout(vlayout2);
@@ -120,6 +140,14 @@ void MainWindow::chooseFile()
     else {
         std::cout<<"failed to open file"<<std::endl;
     }
+}
+
+void MainWindow::getApiKey() {
+    if (apiKeyEdit->text() == "")
+        key = "helloworld";
+    else
+        key = apiKeyEdit->text();
+    std::cout << "key: " << key.toStdString() << std::endl;
 }
 
 /**
@@ -188,10 +216,10 @@ void MainWindow::recognize() {
     }
 
     multipart->append(partParameter("isOverlayRequired","false"));
-    multipart->append(partParameter("apikey","helloworld"));
+    multipart->append(partParameter("apikey",key));
 
     //OCR Space API url
-    QUrl api_url("https://apifree2.ocr.space/parse/image");
+    QUrl api_url("https://api.ocr.space/parse/image");
 
     //create network request obj that contains the api url
     QNetworkRequest api_request(api_url);
@@ -213,7 +241,7 @@ void MainWindow::recognize() {
  */
 void MainWindow::onItemClicked(QListWidgetItem *item) {
     QString text = QString("%1").arg(item->text());
-    language = text;
+    language = text.mid(0,3).toLower();
     qDebug() << text;
 }
 
