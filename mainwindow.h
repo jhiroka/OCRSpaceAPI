@@ -39,7 +39,7 @@
 #include <QIcon>
 #include <QMessageBox>
 #include <QScrollArea>
-
+#include <QLineEdit>
 
 namespace Ui {
 class MainWindow;
@@ -60,7 +60,7 @@ public slots:
     void networkData();
     void saveToFile();
     void onItemClicked(QListWidgetItem* item);
-
+    void getApiKey();
 private:
     Ui::MainWindow *ui;
     QString fileName;
@@ -69,6 +69,9 @@ private:
     QString language;
     QListWidget* languageChoices;
     QStringList languages;
+    QLineEdit* apiKeyEdit;
+    QString key;
+
 
     QImage* originalImage = new QImage;
     QLabel* displayImage;
